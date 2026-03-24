@@ -4,7 +4,7 @@ import 'package:product_app/data/datasources/product_remote_datasource.dart';
 import 'package:product_app/domain/entities/product.dart';
 import 'package:product_app/domain/repositories/product_repository.dart';
 
-class ProductRepositoryImpl implements ProductRepository{
+class ProductRepositoryImpl implements ProductRepository {
   final ProductRemoteDatasource remote;
   final ProductCacheDatasource cache;
 
@@ -12,33 +12,40 @@ class ProductRepositoryImpl implements ProductRepository{
 
   @override
   Future<List<Product>> getProducts() async {
-
     try {
       final models = await remote.getProducts();
 
       cache.save(models);
 
       return models
-        .map((m) => Product(
-          id: m.id.toString(),//toString() para manter a consistência com o id vindo do remote
-          title: m.title,
-          price: m.price,
-          image: m.image,
-       ))
-       .toList();
-  } catch (e) {
-    final cached = cache.get();
-    if (cached != null) {
-      return cached
-      .map((m) => Product(
-        id: m.id.toString(), //toString() para manter a consistência com o id vindo do remote
-        title: m.title,
-        price: m.price,
-        image: m.image,
-      ))
-      .toList();
+          .map(
+            (m) => Product(
+              id: m.id.toString(),
+              title: m.title,
+              description: m.description,
+              price: m.price,
+              image: m.image,
+              category: m.category,
+            ),
+          )
+          .toList();
+    } catch (e) {
+      final cached = cache.get();
+      if (cached != null) {
+        return cached
+            .map(
+              (m) => Product(
+                id: m.id.toString(),
+                title: m.title,
+                description: m.description,
+                price: m.price,
+                image: m.image,
+                category: m.category,
+              ),
+            )
+            .toList();
+      }
+      throw Failure("Não foi possível carregar os produtos");
     }
-    throw Failure("Não foi possível carregar os produtos");
   }
-}
 }

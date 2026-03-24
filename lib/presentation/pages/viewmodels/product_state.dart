@@ -1,4 +1,5 @@
-import '../../../domain/entities/product.dart';
+import 'package:product_app/domain/entities/product.dart';
+
 
 class ProductState {
   final bool isLoading;

@@ -1,0 +1,16 @@
+[33m5e1f954[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m HEAD@{0}: Branch: renamed refs/heads/clean to refs/heads/main
+[33m5e1f954[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m HEAD@{2}: commit (initial): Repositório Atualizado
+[33m139e8ad[m HEAD@{3}: reset: moving to HEAD
+[33m139e8ad[m HEAD@{4}: checkout: moving from main to main
+[33m139e8ad[m HEAD@{5}: Branch: renamed refs/heads/clean to refs/heads/main
+[33m139e8ad[m HEAD@{7}: commit (initial): Primeiro Commit
+[33mc17dc7c[m HEAD@{8}: Branch: renamed refs/heads/clean-main to refs/heads/main
+[33mc17dc7c[m HEAD@{10}: commit (initial): Atividade 07 - Navegação Flutter com Fake API
+[33ma387804[m HEAD@{11}: reset: moving to a387804
+[33mfe1903e[m HEAD@{12}: reset: moving to fe1903e
+[33mfe1903e[m HEAD@{13}: checkout: moving from gabi to main
+[33mfe1903e[m HEAD@{14}: checkout: moving from main to gabi
+[33mfe1903e[m HEAD@{15}: checkout: moving from gabi to main
+[33mfe1903e[m HEAD@{16}: checkout: moving from main to gabi
+[33mfe1903e[m HEAD@{17}: commit: Inserção Fake API- Expansão de Navegação
+[33ma387804[m HEAD@{18}: clone: from https://github.com/Aguiando/mobile_arquitetura_01.git

@@ -4,8 +4,9 @@ import 'package:http/http.dart' as http;
 import 'package:product_app/data/datasources/product_cache_datasource.dart';
 import 'package:product_app/data/datasources/product_remote_datasource.dart';
 import 'package:product_app/data/repositories/product_repository_imp.dart';
-import 'package:product_app/presentation/pages/product_page.dart';
+import 'package:product_app/presentation/pages/home_page.dart';
 import 'package:product_app/presentation/pages/viewmodels/product_viewmodel.dart';
+
 
 void main() {
   final cache = ProductCacheDatasource();
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: ProductPage(viewModel: viewModel),
+      home: HomePage(viewModel: viewModel),
     );
   }
 }

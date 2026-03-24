@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:product_app/domain/repositories/product_repository.dart';
 import 'package:product_app/presentation/pages/viewmodels/product_state.dart';
-import '../../../domain/repositories/product_repository.dart';
+
 
 class ProductViewModel {
   final ProductRepository repository;
