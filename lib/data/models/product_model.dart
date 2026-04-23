@@ -17,6 +17,7 @@ class ProductModel {
     this.favorite = false,
   });
 
+
   factory ProductModel.fromJson(Map<String, dynamic> json) {
     return ProductModel(
       id: json["id"],
@@ -26,5 +27,16 @@ class ProductModel {
       category: json["category"],
       image: json["image"],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "id": id,
+      "title": title,
+      "description": description,
+      "price": price,
+      "image": image,
+      "category": category,
+    };
   }
 }
