@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class ProductDetailPage extends StatelessWidget {
-
   final String productName;
   final double price;
   final String description;
@@ -17,28 +16,23 @@ class ProductDetailPage extends StatelessWidget {
     required this.description,
     required this.image,
     required this.category,
-
   });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Detalhes"),
-      ),
+      appBar: AppBar(title: Text("Detalhes")),
       body: Column(
         children: [
           Text(productName, style: TextStyle(fontWeight: FontWeight.bold)),
           Text(category),
           SizedBox(height: 8),
           Expanded(
-            child: Image(image: NetworkImage(image),
-            fit: BoxFit.contain,
-            ),
+            child: Image(image: NetworkImage(image), fit: BoxFit.contain),
           ),
           SizedBox(height: 8),
           Text("R\$ ${price}", style: TextStyle(color: Colors.pink)),
-          SizedBox(height: 8),   
+          SizedBox(height: 8),
           Text(description),
           SizedBox(height: 16),
           ElevatedButton(

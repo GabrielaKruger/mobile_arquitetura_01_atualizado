@@ -82,9 +82,7 @@ class ProductPage extends ConsumerWidget {
 
                     title: Text(product.title),
 
-                    subtitle: Text(
-                      'R\$ ${product.price.toStringAsFixed(2)}',
-                    ),
+                    subtitle: Text('R\$ ${product.price.toStringAsFixed(2)}'),
 
                     //  CRUD + FAVORITO
                     trailing: Row(
@@ -110,22 +108,43 @@ class ProductPage extends ConsumerWidget {
                         IconButton(
                           icon: const Icon(Icons.delete),
                           onPressed: () async {
-                            await viewModel.deleteProduct(product.id);
-
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Produto deletado'),
+                            final confirm = await showDialog(
+                              context: context,
+                              builder: (_) => AlertDialog(
+                                title: const Text("Confirmar"),
+                                content: const Text(
+                                  "Deseja excluir este produto?",
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.pop(context, false),
+                                    child: const Text("Cancelar"),
+                                  ),
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.pop(context, true),
+                                    child: const Text("Excluir"),
+                                  ),
+                                ],
                               ),
                             );
+
+                            if (confirm == true) {
+                              await viewModel.deleteProduct(product.id);
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Produto excluído com sucesso"),
+                                ),
+                              );
+                            }
                           },
                         ),
-
                         //  FAVORITO
                         IconButton(
                           icon: Icon(
-                            isFavorite
-                                ? Icons.favorite
-                                : Icons.favorite_border,
+                            isFavorite ? Icons.favorite : Icons.favorite_border,
                             color: isFavorite ? Colors.purple : null,
                           ),
                           onPressed: () {

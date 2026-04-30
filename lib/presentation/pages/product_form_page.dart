@@ -6,11 +6,7 @@ class ProductFormPage extends StatefulWidget {
   final ProductViewModel viewModel;
   final Product? product;
 
-  const ProductFormPage({
-    super.key,
-    required this.viewModel,
-    this.product,
-  });
+  const ProductFormPage({super.key, required this.viewModel, this.product});
 
   @override
   State<ProductFormPage> createState() => _ProductFormPageState();
@@ -41,8 +37,12 @@ class _ProductFormPageState extends State<ProductFormPage> {
   void submit() async {
     if (!_formKey.currentState!.validate()) return;
 
+    final isEdit = widget.product != null;
+
     final product = Product(
-      id: widget.product?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
+      id:
+          widget.product?.id ??
+          DateTime.now().millisecondsSinceEpoch.toString(),
       title: titleController.text,
       description: descriptionController.text,
       price: double.parse(priceController.text),
@@ -50,11 +50,21 @@ class _ProductFormPageState extends State<ProductFormPage> {
       category: categoryController.text,
     );
 
-    if (widget.product == null) {
-      await widget.viewModel.addProduct(product);
-    } else {
+    if (isEdit) {
       await widget.viewModel.updateProduct(product);
+    } else {
+      await widget.viewModel.addProduct(product);
     }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          isEdit
+              ? "Produto atualizado com sucesso"
+              : "Produto criado com sucesso",
+        ),
+      ),
+    );
 
     Navigator.pop(context);
   }
@@ -63,7 +73,9 @@ class _ProductFormPageState extends State<ProductFormPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.product == null ? 'Cadastrar Produto' : 'Editar Produto'),
+        title: Text(
+          widget.product == null ? 'Cadastrar Produto' : 'Editar Produto',
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -74,12 +86,19 @@ class _ProductFormPageState extends State<ProductFormPage> {
               TextFormField(
                 controller: titleController,
                 decoration: const InputDecoration(labelText: 'Título'),
-                validator: (v) => v!.isEmpty ? 'Obrigatório' : null,
+                validator: (v) =>
+                    v == null || v.isEmpty ? 'Informe o título' : null,
               ),
               TextFormField(
                 controller: priceController,
                 decoration: const InputDecoration(labelText: 'Preço'),
                 keyboardType: TextInputType.number,
+                validator: (v) {
+                  if (v == null || v.isEmpty) return 'Informe o preço';
+                  if (double.tryParse(v) == null)
+                    return 'Preço inválido, informe um valor numérico e separado por ponto (ex: 19.99)';
+                  return null;
+                },
               ),
               TextFormField(
                 controller: descriptionController,
@@ -94,10 +113,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
                 decoration: const InputDecoration(labelText: 'Categoria'),
               ),
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: submit,
-                child: const Text('Salvar'),
-              ),
+              ElevatedButton(onPressed: submit, child: const Text('Salvar')),
             ],
           ),
         ),

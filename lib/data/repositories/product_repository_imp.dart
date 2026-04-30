@@ -11,15 +11,18 @@ class ProductRepositoryImpl implements ProductRepository {
 
   ProductRepositoryImpl(this.remote, this.cache);
 
+ 
+  final List<ProductModel> _localProducts = [];
 
   @override
   Future<List<Product>> getProducts() async {
     try {
       final models = await remote.getProducts();
 
-      cache.save(models);
+      // junta API + locais
+      final allProducts = [...models, ..._localProducts];
 
-      return models.map((m) => Product(
+      return allProducts.map((m) => Product(
             id: m.id.toString(),
             title: m.title,
             description: m.description,
@@ -28,24 +31,11 @@ class ProductRepositoryImpl implements ProductRepository {
             category: m.category,
           )).toList();
     } catch (e) {
-      final cached = cache.get();
-
-      if (cached != null) {
-        return cached.map((m) => Product(
-              id: m.id.toString(),
-              title: m.title,
-              description: m.description,
-              price: m.price,
-              image: m.image,
-              category: m.category,
-            )).toList();
-      }
-
-      throw Failure("Não foi possível carregar os produtos");
+      throw Failure("Erro ao carregar produtos");
     }
   }
 
- 
+
   @override
   Future<void> addProduct(Product product) async {
     final model = ProductModel(
@@ -57,27 +47,31 @@ class ProductRepositoryImpl implements ProductRepository {
       category: product.category,
     );
 
-    await remote.addProduct(model);
+    _localProducts.add(model);
   }
 
  
   @override
   Future<void> updateProduct(Product product) async {
-    final model = ProductModel(
-      id: int.parse(product.id),
-      title: product.title,
-      description: product.description,
-      price: product.price,
-      image: product.image,
-      category: product.category,
+    final index = _localProducts.indexWhere(
+      (p) => p.id.toString() == product.id,
     );
 
-    await remote.updateProduct(model);
+    if (index != -1) {
+      _localProducts[index] = ProductModel(
+        id: int.parse(product.id),
+        title: product.title,
+        description: product.description,
+        price: product.price,
+        image: product.image,
+        category: product.category,
+      );
+    }
   }
 
-
+ 
   @override
   Future<void> deleteProduct(String id) async {
-    await remote.deleteProduct(id);
+    _localProducts.removeWhere((p) => p.id.toString() == id);
   }
 }
