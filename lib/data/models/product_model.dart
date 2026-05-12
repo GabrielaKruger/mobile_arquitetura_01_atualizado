@@ -5,7 +5,6 @@ class ProductModel {
   final double price;
   final String image;
   final String category;
-  bool favorite = false;
 
   ProductModel({
     required this.id,
@@ -14,18 +13,16 @@ class ProductModel {
     required this.price,
     required this.image,
     required this.category,
-    this.favorite = false,
   });
-
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
     return ProductModel(
       id: json["id"],
       title: json["title"],
       description: json["description"],
-      price: json["price"].toDouble(),
+      price: (json["price"] as num).toDouble(),
+      image: json["thumbnail"],
       category: json["category"],
-      image: json["image"],
     );
   }
 
@@ -35,7 +32,7 @@ class ProductModel {
       "title": title,
       "description": description,
       "price": price,
-      "image": image,
+      "thumbnail": image,
       "category": category,
     };
   }

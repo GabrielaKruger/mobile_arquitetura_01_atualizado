@@ -16,7 +16,17 @@ class ProductPage extends ConsumerWidget {
     final favorites = ref.watch(favoritesProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Produtos')),
+      appBar: AppBar(
+  title: const Text('Produtos'),
+  actions: [
+    IconButton(
+      icon: const Icon(Icons.refresh),
+      onPressed: () {
+        viewModel.loadProducts();
+      },
+    ),
+  ],
+),
 
       // ➕ BOTÃO DE ADICIONAR
       floatingActionButton: FloatingActionButton(
@@ -131,13 +141,13 @@ class ProductPage extends ConsumerWidget {
                             );
 
                             if (confirm == true) {
-                              await viewModel.deleteProduct(product.id);
+ScaffoldMessenger.of(context).showSnackBar(
+  const SnackBar(
+    content: Text("Produto excluído com sucesso"),
+  ),
+);
 
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("Produto excluído com sucesso"),
-                                ),
-                              );
+await viewModel.deleteProduct(product.id);
                             }
                           },
                         ),

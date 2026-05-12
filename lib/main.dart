@@ -6,7 +6,8 @@ import 'package:product_app/data/datasources/product_remote_datasource.dart';
 import 'package:product_app/data/repositories/product_repository_imp.dart';
 import 'package:product_app/presentation/pages/home_page.dart';
 import 'package:product_app/presentation/pages/viewmodels/product_viewmodel.dart';
-
+import 'package:product_app/data/services/auth_service.dart';
+import 'package:product_app/presentation/pages/login_page.dart';
 
 void main() {
   final cache = ProductCacheDatasource();
@@ -14,11 +15,7 @@ void main() {
   final repository = ProductRepositoryImpl(remote, cache);
   final viewModel = ProductViewModel(repository);
 
-  runApp(
-    ProviderScope(
-      child: MyApp(viewModel: viewModel),
-    ),
-  );
+  runApp(ProviderScope(child: MyApp(viewModel: viewModel)));
 }
 
 class MyApp extends StatelessWidget {
@@ -28,12 +25,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Product App',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: HomePage(viewModel: viewModel),
-    );
+return MaterialApp(
+  debugShowCheckedModeBanner: false,
+  title: 'Product App',
+  theme: ThemeData(
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: Colors.deepPurple,
+    ),
+  ),
+  home: LoginPage(
+    authService: AuthService(http.Client()),
+    viewModel: viewModel,
+  ),
+);
   }
 }

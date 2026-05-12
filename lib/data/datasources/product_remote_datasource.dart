@@ -7,25 +7,42 @@ class ProductRemoteDatasource {
 
   ProductRemoteDatasource(this.client);
 
-  final String baseUrl = 'https://fakestoreapi.com/products';
+  final String baseUrl = 'https://dummyjson.com/products';
 
-  // ✅ GET
   Future<List<ProductModel>> getProducts() async {
     try {
       final response = await client.get(Uri.parse(baseUrl));
 
       if (response.statusCode == 200) {
-        final List<dynamic> data = jsonDecode(response.body);
-        return data.map((json) => ProductModel.fromJson(json)).toList();
+        final data = jsonDecode(response.body);
+
+        final List<dynamic> products = data["products"];
+
+        return products
+            .map((json) => ProductModel.fromJson(json))
+            .toList();
       } else {
-        throw Exception('Erro ao carregar produtos: ${response.statusCode}');
+        throw Exception('Erro ao carregar produtos');
       }
     } catch (e) {
-      throw Exception('Falha na conexão: $e');
+      throw Exception('Falha na conexão');
     }
   }
 
-  // ✅ POST
+  Future<ProductModel> getProductById(String id) async {
+    final response = await client.get(
+      Uri.parse('$baseUrl/$id'),
+    );
+
+    if (response.statusCode == 200) {
+      return ProductModel.fromJson(
+        jsonDecode(response.body),
+      );
+    } else {
+      throw Exception("Erro ao carregar produto");
+    }
+  }
+
   Future<void> addProduct(ProductModel product) async {
     final response = await client.post(
       Uri.parse(baseUrl),
@@ -39,12 +56,12 @@ class ProductRemoteDatasource {
       }),
     );
 
-    if (response.statusCode != 200 && response.statusCode != 201) {
+    if (response.statusCode != 200 &&
+        response.statusCode != 201) {
       throw Exception('Erro ao adicionar produto');
     }
   }
 
-  // ✅ PUT
   Future<void> updateProduct(ProductModel product) async {
     final response = await client.put(
       Uri.parse('$baseUrl/${product.id}'),
@@ -63,7 +80,6 @@ class ProductRemoteDatasource {
     }
   }
 
-  // ✅ DELETE
   Future<void> deleteProduct(String id) async {
     final response = await client.delete(
       Uri.parse('$baseUrl/$id'),
