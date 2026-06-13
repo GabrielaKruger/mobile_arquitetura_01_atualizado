@@ -4,7 +4,6 @@ import 'package:http/http.dart' as http;
 import 'package:product_app/data/datasources/product_cache_datasource.dart';
 import 'package:product_app/data/datasources/product_remote_datasource.dart';
 import 'package:product_app/data/repositories/product_repository_imp.dart';
-import 'package:product_app/presentation/pages/home_page.dart';
 import 'package:product_app/presentation/pages/viewmodels/product_viewmodel.dart';
 import 'package:product_app/data/services/auth_service.dart';
 import 'package:product_app/presentation/pages/login_page.dart';
@@ -25,18 +24,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-return MaterialApp(
-  debugShowCheckedModeBanner: false,
-  title: 'Product App',
-  theme: ThemeData(
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: Colors.deepPurple,
-    ),
-  ),
-  home: LoginPage(
-    authService: AuthService(http.Client()),
-    viewModel: viewModel,
-  ),
-);
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Mobile Arquitetura 01',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.deepPurple,
+        ),
+      ),
+      home: LoginPage(
+        authService: AuthService(http.Client()),
+        viewModel: viewModel,
+      ),
+    );
   }
 }

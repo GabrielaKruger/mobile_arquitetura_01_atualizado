@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart' as http;
+import 'package:product_app/data/services/auth_service.dart';
+import 'package:product_app/data/session/session_manager.dart';
+import 'package:product_app/presentation/pages/login_page.dart';
 import 'package:product_app/presentation/pages/product_detail_page.dart';
 import 'package:product_app/presentation/pages/viewmodels/product_state.dart';
 import 'package:product_app/presentation/pages/viewmodels/product_viewmodel.dart';
 import 'package:product_app/state/riverpod/favorite_riverpod.dart';
+
 import 'product_form_page.dart';
 
 class ProductPage extends ConsumerWidget {
@@ -13,22 +18,25 @@ class ProductPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (!SessionManager.isLogged) {
+      return LoginPage(
+        authService: AuthService(http.Client()),
+        viewModel: viewModel,
+      );
+    }
+
     final favorites = ref.watch(favoritesProvider);
 
     return Scaffold(
       appBar: AppBar(
-  title: const Text('Produtos'),
-  actions: [
-    IconButton(
-      icon: const Icon(Icons.refresh),
-      onPressed: () {
-        viewModel.loadProducts();
-      },
-    ),
-  ],
-),
-
-      // ➕ BOTÃO DE ADICIONAR
+        title: const Text('Produtos'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: viewModel.loadProducts,
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
@@ -40,7 +48,6 @@ class ProductPage extends ConsumerWidget {
         },
         child: const Icon(Icons.add),
       ),
-
       body: ValueListenableBuilder<ProductState>(
         valueListenable: viewModel.state,
         builder: (context, state, _) {
@@ -80,7 +87,6 @@ class ProductPage extends ConsumerWidget {
                         ),
                       );
                     },
-
                     leading: Image.network(
                       product.image,
                       width: 50,
@@ -89,16 +95,11 @@ class ProductPage extends ConsumerWidget {
                       errorBuilder: (_, __, ___) =>
                           const Icon(Icons.broken_image),
                     ),
-
                     title: Text(product.title),
-
                     subtitle: Text('R\$ ${product.price.toStringAsFixed(2)}'),
-
-                    //  CRUD + FAVORITO
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        // ✏️ EDITAR
                         IconButton(
                           icon: const Icon(Icons.edit),
                           onPressed: () {
@@ -113,45 +114,46 @@ class ProductPage extends ConsumerWidget {
                             );
                           },
                         ),
-
-                        // 🗑️ DELETAR
                         IconButton(
                           icon: const Icon(Icons.delete),
                           onPressed: () async {
-                            final confirm = await showDialog(
+                            final confirm = await showDialog<bool>(
                               context: context,
                               builder: (_) => AlertDialog(
-                                title: const Text("Confirmar"),
+                                title: const Text('Confirmar'),
                                 content: const Text(
-                                  "Deseja excluir este produto?",
+                                  'Deseja excluir este produto?',
                                 ),
                                 actions: [
                                   TextButton(
                                     onPressed: () =>
                                         Navigator.pop(context, false),
-                                    child: const Text("Cancelar"),
+                                    child: const Text('Cancelar'),
                                   ),
                                   TextButton(
                                     onPressed: () =>
                                         Navigator.pop(context, true),
-                                    child: const Text("Excluir"),
+                                    child: const Text('Excluir'),
                                   ),
                                 ],
                               ),
                             );
 
                             if (confirm == true) {
-ScaffoldMessenger.of(context).showSnackBar(
-  const SnackBar(
-    content: Text("Produto excluído com sucesso"),
-  ),
-);
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'Produto excluido com sucesso',
+                                    ),
+                                  ),
+                                );
+                              }
 
-await viewModel.deleteProduct(product.id);
+                              await viewModel.deleteProduct(product.id);
                             }
                           },
                         ),
-                        //  FAVORITO
                         IconButton(
                           icon: Icon(
                             isFavorite ? Icons.favorite : Icons.favorite_border,
@@ -166,7 +168,6 @@ await viewModel.deleteProduct(product.id);
                       ],
                     ),
                   ),
-
                   const Divider(
                     height: 10,
                     thickness: 1,

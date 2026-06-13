@@ -25,24 +25,24 @@ class _ProductFormPageState extends State<ProductFormPage> {
   void initState() {
     super.initState();
 
-    final p = widget.product;
+    final product = widget.product;
 
-    titleController = TextEditingController(text: p?.title ?? '');
-    priceController = TextEditingController(text: p?.price.toString() ?? '');
-    descriptionController = TextEditingController(text: p?.description ?? '');
-    imageController = TextEditingController(text: p?.image ?? '');
-    categoryController = TextEditingController(text: p?.category ?? '');
+    titleController = TextEditingController(text: product?.title ?? '');
+    priceController = TextEditingController(text: product?.price.toString() ?? '');
+    descriptionController = TextEditingController(
+      text: product?.description ?? '',
+    );
+    imageController = TextEditingController(text: product?.image ?? '');
+    categoryController = TextEditingController(text: product?.category ?? '');
   }
 
-  void submit() async {
+  Future<void> submit() async {
     if (!_formKey.currentState!.validate()) return;
 
     final isEdit = widget.product != null;
 
     final product = Product(
-      id:
-          widget.product?.id ??
-          DateTime.now().millisecondsSinceEpoch.toString(),
+      id: widget.product?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
       title: titleController.text,
       description: descriptionController.text,
       price: double.parse(priceController.text),
@@ -56,17 +56,29 @@ class _ProductFormPageState extends State<ProductFormPage> {
       await widget.viewModel.addProduct(product);
     }
 
+    if (!mounted) return;
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
           isEdit
-              ? "Produto atualizado com sucesso"
-              : "Produto criado com sucesso",
+              ? 'Produto atualizado com sucesso'
+              : 'Produto criado com sucesso',
         ),
       ),
     );
 
     Navigator.pop(context);
+  }
+
+  @override
+  void dispose() {
+    titleController.dispose();
+    priceController.dispose();
+    descriptionController.dispose();
+    imageController.dispose();
+    categoryController.dispose();
+    super.dispose();
   }
 
   @override
@@ -85,24 +97,29 @@ class _ProductFormPageState extends State<ProductFormPage> {
             children: [
               TextFormField(
                 controller: titleController,
-                decoration: const InputDecoration(labelText: 'Título'),
-                validator: (v) =>
-                    v == null || v.isEmpty ? 'Informe o título' : null,
+                decoration: const InputDecoration(labelText: 'Titulo'),
+                validator: (value) =>
+                    value == null || value.isEmpty ? 'Informe o titulo' : null,
               ),
               TextFormField(
                 controller: priceController,
-                decoration: const InputDecoration(labelText: 'Preço'),
+                decoration: const InputDecoration(labelText: 'Preco'),
                 keyboardType: TextInputType.number,
-                validator: (v) {
-                  if (v == null || v.isEmpty) return 'Informe o preço';
-                  if (double.tryParse(v) == null)
-                    return 'Preço inválido, informe um valor numérico e separado por ponto (ex: 19.99)';
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Informe o preco';
+                  }
+
+                  if (double.tryParse(value) == null) {
+                    return 'Preco invalido. Use ponto. Ex: 19.99';
+                  }
+
                   return null;
                 },
               ),
               TextFormField(
                 controller: descriptionController,
-                decoration: const InputDecoration(labelText: 'Descrição'),
+                decoration: const InputDecoration(labelText: 'Descricao'),
               ),
               TextFormField(
                 controller: imageController,

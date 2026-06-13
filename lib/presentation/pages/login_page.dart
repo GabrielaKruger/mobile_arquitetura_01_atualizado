@@ -25,11 +25,10 @@ class _LoginPageState extends State<LoginPage> {
   bool isLoading = false;
 
   Future<void> login() async {
-    if (userController.text.isEmpty ||
-        passwordController.text.isEmpty) {
+    if (userController.text.isEmpty || passwordController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text("Preencha usuário e senha"),
+          content: Text('Preencha usuario e senha'),
         ),
       );
       return;
@@ -47,6 +46,8 @@ class _LoginPageState extends State<LoginPage> {
 
       SessionManager.saveUser(user);
 
+      if (!mounted) return;
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -56,23 +57,34 @@ class _LoginPageState extends State<LoginPage> {
         ),
       );
     } catch (e) {
+      if (!mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(e.toString()),
         ),
       );
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
+  }
 
-    setState(() {
-      isLoading = false;
-    });
+  @override
+  void dispose() {
+    userController.dispose();
+    passwordController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Login"),
+        title: const Text('Login'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -81,14 +93,14 @@ class _LoginPageState extends State<LoginPage> {
             TextField(
               controller: userController,
               decoration: const InputDecoration(
-                labelText: "Usuário",
+                labelText: 'Usuario',
               ),
             ),
             TextField(
               controller: passwordController,
               obscureText: true,
               decoration: const InputDecoration(
-                labelText: "Senha",
+                labelText: 'Senha',
               ),
             ),
             const SizedBox(height: 20),
@@ -96,7 +108,7 @@ class _LoginPageState extends State<LoginPage> {
               onPressed: isLoading ? null : login,
               child: isLoading
                   ? const CircularProgressIndicator()
-                  : const Text("Entrar"),
+                  : const Text('Entrar'),
             ),
           ],
         ),

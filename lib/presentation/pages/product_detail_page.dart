@@ -1,6 +1,4 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class ProductDetailPage extends StatelessWidget {
   final String productName;
@@ -21,27 +19,39 @@ class ProductDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Detalhes")),
-      body: Column(
-        children: [
-          Text(productName, style: TextStyle(fontWeight: FontWeight.bold)),
-          Text(category),
-          SizedBox(height: 8),
-          Expanded(
-            child: Image(image: NetworkImage(image), fit: BoxFit.contain),
-          ),
-          SizedBox(height: 8),
-          Text("R\$ ${price}", style: TextStyle(color: Colors.pink)),
-          SizedBox(height: 8),
-          Text(description),
-          SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: Text("Voltar"),
-          ),
-        ],
+      appBar: AppBar(title: const Text('Detalhes')),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              productName,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            Text(category),
+            const SizedBox(height: 8),
+            Expanded(
+              child: Center(
+                child: Image.network(image, fit: BoxFit.contain),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'R\$ ${price.toStringAsFixed(2)}',
+              style: const TextStyle(color: Colors.pink),
+            ),
+            const SizedBox(height: 8),
+            Text(description),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Voltar'),
+            ),
+          ],
+        ),
       ),
     );
   }

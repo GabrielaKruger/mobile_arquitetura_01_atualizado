@@ -1,16 +1,34 @@
-# product_app
+# mobile_arquitetura_01
 
-A new Flutter project.
+Projeto Flutter mobile com login autenticado pela API DummyJSON, listagem de produtos, detalhes, favoritos e controle de sessao.
 
-## Getting Started
+## Como executar
 
-This project is a starting point for a Flutter application.
+```bash
+flutter pub get
+flutter run
+```
 
-A few resources to get you started if this is your first Flutter project:
+## API utilizada
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- Login: `POST https://dummyjson.com/auth/login`
+- Produtos: `GET https://dummyjson.com/products`
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Usuario de teste da DummyJSON:
+
+- Usuario: `emilys`
+- Senha: `emilyspass`
+
+## Organizacao
+
+O projeto esta separado em camadas:
+
+- `core`: erros e estruturas compartilhadas.
+- `data`: datasources, models, repositories, services e sessao.
+- `domain`: entidades e contratos.
+- `presentation`: telas e viewmodels.
+- `state`: estado global de favoritos com Riverpod.
+
+## Gerenciamento de estado
+
+O projeto usa Riverpod no controle de favoritos, porque a lista precisa atualizar automaticamente quando um produto e marcado ou removido dos favoritos. Tambem usa `ValueNotifier` no `ProductViewModel` para refletir carregamento, erro e lista de produtos, alem de `setState` na tela de login para controlar o carregamento local do botao.
